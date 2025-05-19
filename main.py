@@ -89,7 +89,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ Anda tidak memiliki izin untuk menggunakan bot ini, silahkan hubungi admin!")
         return
 
-    # Inline keyboard menu
+    
     keyboard = [
         [InlineKeyboardButton("📄 Cek Daftar Domain", callback_data="ceklist_domains")],
         [InlineKeyboardButton("➕ Tambah Site", callback_data="tambah_site")],
