@@ -7,14 +7,14 @@ from datetime import datetime
 import pytz
 
 # ===================== CONFIG =====================
-BOT_TOKEN = "7227299070:AAH6_xQpd-m2HO_jDl1XSlbtMvxCGDJU9m4"  # Ganti dengan token bot kamu
-CHAT_ID = -4556672761  # Ganti dengan chat ID kamu (grup atau pribadi)
+BOT_TOKEN = ""  
+CHAT_ID = -45566
 LIST_FILE = "list.txt"
-ALLOWED_USERS_FILE = "users.txt"  # File untuk menyimpan username yang diizinkan
-MASTER_IDS = [1847390534, 6946484480, 1148011286, 5892720279, 1291694698]  # Daftar ID Master yang dapat menambahkan user ID
+ALLOWED_USERS_FILE = "users.txt"  
+MASTER_IDS = [1847390534]  
 
 # ===================== ZONA WAKTU =====================
-indonesia_timezone = pytz.timezone("Asia/Jakarta")  # Zona waktu Indonesia (GMT +7)
+indonesia_timezone = pytz.timezone("Asia/Jakarta")  
 
 def get_current_time():
     """Mengambil waktu saat ini di zona waktu Indonesia"""
@@ -110,13 +110,13 @@ async def ceklist(update: Update, context: ContextTypes.DEFAULT_TYPE):
     current_time = get_current_time()
     response = f"📅 <b>Daftar Domain</b> pada: {current_time}\n\n"
 
-    # Iterasi untuk menampilkan brand dan domain yang terkait
+    
     for brand, domains in domains_by_brand.items():
         response += f"🔹 <b>{brand}</b>\n"
         for domain in domains:
             response += f"- {domain}\n"
 
-    # Cek jika menggunakan callback_query (tombol inline) atau message biasa
+   
     if update.callback_query:
         await update.callback_query.message.reply_text(response, parse_mode='HTML')
     else:
@@ -131,7 +131,7 @@ async def cek(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     domain_to_check = context.args[0].strip().lower()
     
-    # Lakukan pengecekan status domain meskipun tidak ada dalam daftar
+    
     result = check_domain(domain_to_check)
     if result.get("error"):
         await update.message.reply_text(f"❌ <b>{domain_to_check}</b> - <b>ERROR</b>: {result['error']}", parse_mode='HTML')
@@ -154,7 +154,7 @@ async def cekstatus(update: Update, context: ContextTypes.DEFAULT_TYPE):
     current_time = get_current_time()
     response = f"📅 <b>Status Blokir Domain</b> pada: {current_time}\n\n"
 
-    # Menampilkan status untuk setiap domain
+    
     blocked_domains = []
     unblocked_domains = []
 
@@ -165,18 +165,18 @@ async def cekstatus(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 response += f"❌ <b>{domain}</b> - ERROR: {result['error']}\n"
             elif result["blocked"]:
                 response += f"⚠️ <b>{domain}</b> DIBLOKIR\n"
-                blocked_domains.append(domain)  # Menyimpan domain yang diblokir
+                blocked_domains.append(domain)  
             else:
-                unblocked_domains.append(domain)  # Menyimpan domain yang tidak diblokir
+                unblocked_domains.append(domain)  
                 response += f"✅ <b>{domain}</b> tidak diblokir.\n"
 
-    # Menandai admin jika ada domain yang diblokir
+   
     if blocked_domains:
-        # Menyebutkan admin dengan username mereka
+        
         admin_mentions = "@BangMeta @promaag88 @Lweiq168 @rakyatjelata123"
         response += f"\n🚨 <b>List Domain Block</b>: <b>{', '.join(blocked_domains)}</b>\n{admin_mentions}"
 
-    # Kirimkan hasil pengecekan ke grup atau pengguna
+    
     await context.bot.send_message(chat_id=CHAT_ID, text=response, parse_mode='HTML')
 
 # ===================== ADD DOMAIN =====================
@@ -195,13 +195,13 @@ async def addsite(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     domains_by_brand = load_domains()
     
-    # Jika brand belum ada, buat baru
+    
     if brand not in domains_by_brand:
         domains_by_brand[brand] = []
 
     added = []
     for domain in new_domains:
-        if domain not in domains_by_brand[brand]:  # Hanya tambah jika domain belum ada
+        if domain not in domains_by_brand[brand]:  
             domains_by_brand[brand].append(domain)
             added.append(domain)
 
@@ -251,14 +251,14 @@ async def adduser(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     new_username = context.args[0].strip()
 
-    # Memuat daftar user yang diizinkan
+    
     allowed_users = load_allowed_users()
 
     if new_username in allowed_users:
         await update.message.reply_text(f"❌ Username <b>{new_username}</b> sudah ada dalam daftar.", parse_mode='HTML')
         return
 
-    # Menambahkan username ke dalam file
+    
     with open(ALLOWED_USERS_FILE, "a") as f:
         f.write(new_username + "\n")
 
@@ -290,7 +290,7 @@ async def auto_check_domains(context: ContextTypes.DEFAULT_TYPE):
     current_time = get_current_time()
     response = f"📅 <b>Hasil Pengecekan Status Domain</b> pada: {current_time}\n\n"
     
-    # Menampilkan status untuk setiap domain
+    
     blocked_domains = []
     unblocked_domains = []
 
@@ -301,39 +301,39 @@ async def auto_check_domains(context: ContextTypes.DEFAULT_TYPE):
                 response += f"❌ <b>{domain}</b> - ERROR: {result['error']}\n"
             elif result["blocked"]:
                 response += f"⚠️ <b>{domain}</b> DIBLOKIR\n"
-                blocked_domains.append(domain)  # Menyimpan domain yang diblokir
+                blocked_domains.append(domain)  
             else:
-                unblocked_domains.append(domain)  # Menyimpan domain yang tidak diblokir
+                unblocked_domains.append(domain)  
                 response += f"✅ <b>{domain}</b> tidak diblokir.\n"
 
-    # Jika ada domain yang diblokir, kirimkan pesan ke admin dan tandai domain yang diblokir
+    
     if blocked_domains:
-        # Menyebutkan admin dengan username mereka
+        
         admin_mentions = "@BangMeta @promaag88 @Lweiq168 @rakyatjelata123"
         response += f"\n🚨 <b>List Domain Block</b>: <b>{', '.join(blocked_domains)}</b>\n{admin_mentions}"
 
-        # Kirimkan hasil pengecekan ke grup atau pengguna
+        
         await context.bot.send_message(chat_id=CHAT_ID, text=response, parse_mode='HTML')
     else:
-        # Jika tidak ada domain yang diblokir, tidak mengirimkan pesan apapun
+        
         pass
 
 # ===================== MAIN BOT POLLING =====================
 if __name__ == "__main__":
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    # Set up the JobQueue to run the auto_check_domains function every 5 minutes
+    
     job_queue = app.job_queue
-    job_queue.run_repeating(auto_check_domains, interval=300, first=0)  # 300 detik = 5 menit
+    job_queue.run_repeating(auto_check_domains, interval=300, first=0)  
 
-    # Menambahkan handler untuk perintah dan tombol inline
+    
     app.add_handler(CallbackQueryHandler(button))
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("ceklist", ceklist))
     app.add_handler(CommandHandler("addsite", addsite))
     app.add_handler(CommandHandler("cek", cek))
     app.add_handler(CommandHandler("cekstatus", cekstatus))
-    app.add_handler(CommandHandler("adduser", adduser))  # Handler untuk adduser
+    app.add_handler(CommandHandler("adduser", adduser))  
     app.add_handler(CommandHandler("dellsite", dellsite))
 
     print("🚀 Bot Telegram aktif...")
