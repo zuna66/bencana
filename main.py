@@ -173,7 +173,7 @@ async def cekstatus(update: Update, context: ContextTypes.DEFAULT_TYPE):
    
     if blocked_domains:
         
-        admin_mentions = "@BangMeta @promaag88 @Lweiq168 @rakyatjelata123"
+        admin_mentions = "@admin"
         response += f"\n🚨 <b>List Domain Block</b>: <b>{', '.join(blocked_domains)}</b>\n{admin_mentions}"
 
     
@@ -309,7 +309,7 @@ async def auto_check_domains(context: ContextTypes.DEFAULT_TYPE):
     
     if blocked_domains:
         
-        admin_mentions = "@BangMeta @promaag88 @Lweiq168 @rakyatjelata123"
+        admin_mentions = "@admin"
         response += f"\n🚨 <b>List Domain Block</b>: <b>{', '.join(blocked_domains)}</b>\n{admin_mentions}"
 
         
